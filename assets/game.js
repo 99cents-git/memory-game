@@ -35,7 +35,7 @@ const pickRandom = (array, items) => {
 
     for (let index = 0; index < items; index++) {
         const randomIndex = Math.floor(Math.random() * clonedArray.length)
-        
+
         randomPicks.push(clonedArray[randomIndex])
         clonedArray.splice(randomIndex, 1)
     }
@@ -43,15 +43,14 @@ const pickRandom = (array, items) => {
     return randomPicks
 }
 
-const generateGame = () => {
+const generateGame = (emojis) => {
     const dimensions = selectors.board.getAttribute('data-dimension')
 
     if (dimensions % 2 !== 0) {
         throw new Error("The dimension of the board must be an even number.")
     }
 
-    const emojis = ['🥔', '🍒', '🥑', '🌽', '🥕', '🍇', '🍉', '🍌', '🥭', '🍍']
-    const picks = pickRandom(emojis, (dimensions * dimensions) / 2) 
+    const picks = pickRandom(emojis, (dimensions * dimensions) / 2)
     const items = shuffle([...picks, ...picks])
     const cards = `
         <div class="board" style="grid-template-columns: repeat(${dimensions}, auto)">
@@ -63,7 +62,7 @@ const generateGame = () => {
             `).join('')}
        </div>
     `
-    
+
     const parser = new DOMParser().parseFromString(cards, 'text/html')
 
     selectors.board.replaceWith(parser.querySelector('.board'))
@@ -71,14 +70,6 @@ const generateGame = () => {
 
 const startGame = () => {
     state.gameStarted = true
-    selectors.start.classList.add('disabled')
-
-    state.loop = setInterval(() => {
-        state.totalTime++
-
-        selectors.moves.innerText = `${state.totalFlips} moves`
-        selectors.timer.innerText = `time: ${state.totalTime} sec`
-    }, 1000)
 }
 
 const flipBackCards = () => {
@@ -118,21 +109,24 @@ const flipCard = card => {
     if (!document.querySelectorAll('.card:not(.flipped)').length) {
         setTimeout(() => {
             selectors.boardContainer.classList.add('flipped')
-            selectors.win.innerHTML = `
-                <span class="win-text">
-                    You won!<br />
-                    with <span class="highlight">${state.totalFlips}</span> moves<br />
-                    under <span class="highlight">${state.totalTime}</span> seconds
-                </span>
-            `
-
             clearInterval(state.loop)
         }, 1000)
     }
 }
 
 const attachEventListeners = () => {
-    document.addEventListener('click', event => {
+
+    document.querySelectorAll('.card').forEach(item => {
+        item.addEventListener('click', event => {
+            const eventTarget = event.target
+            const eventParent = eventTarget.parentElement
+            if (!eventParent.className.includes('flipped')) {
+                flipCard(eventParent)
+            }
+        })
+    })
+
+    /*document.addEventListener('click', event => {
         const eventTarget = event.target
         const eventParent = eventTarget.parentElement
 
@@ -141,8 +135,19 @@ const attachEventListeners = () => {
         } else if (eventTarget.nodeName === 'BUTTON' && !eventTarget.className.includes('disabled')) {
             startGame()
         }
-    })
+    })*/
 }
 
-generateGame()
-attachEventListeners()
+const fetchConfig = async () => {
+
+}
+
+fetch("http://99dev.co.za/ls-22/c.json")
+  .then(response => response.json())
+  .then(data => {
+      generateGame(data.memory.items)
+      attachEventListeners();
+      window.parent.postMessage('ready')
+  })
+
+
