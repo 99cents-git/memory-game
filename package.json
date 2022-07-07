@@ -8,7 +8,7 @@
   "scripts": {
     "build": "parcel build index.html --out-dir ../../static/memory-game/  --public-url /memory-game",
     "build-dev": "parcel build index.html --out-dir ../../static/memory-game/  --public-url /ls-22/memory-game",
-    "dev": "parcel index.html --open",
+    "dev": "parcel index.html --open --port 8080",
     "start": "npm run build && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

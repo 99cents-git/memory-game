@@ -55,9 +55,9 @@ const generateGame = (emojis) => {
     const cards = `
         <div class="board" style="grid-template-columns: repeat(${dimensions}, auto)">
             ${items.map(item => `
-                <div class="card">
+                <div class="card" data-id="${item}">
                     <div class="card-front"></div>
-                    <div class="card-back">${item}</div>
+                    <div class="card-back"><img style="width:100%; max-width: 100%; height: auto;" src="${item}"/></div>
                 </div>
             `).join('')}
        </div>
@@ -94,10 +94,16 @@ const flipCard = card => {
 
     if (state.flippedCards === 2) {
         const flippedCards = document.querySelectorAll('.flipped:not(.matched)')
-
-        if (flippedCards[0].innerText === flippedCards[1].innerText) {
+        if (flippedCards[0].getAttribute('data-id') === flippedCards[1].getAttribute('data-id')) {
             flippedCards[0].classList.add('matched')
             flippedCards[1].classList.add('matched')
+
+            setTimeout(()   => {
+                flippedCards[0].classList.add('animate__animated')
+                flippedCards[0].classList.add('animate__tada')
+                flippedCards[1].classList.add('animate__animated')
+                flippedCards[1].classList.add('animate__tada')
+            },600)
         }
 
         setTimeout(() => {
@@ -145,7 +151,18 @@ const fetchConfig = async () => {
 fetch("http://99dev.co.za/ls-22/c.json")
   .then(response => response.json())
   .then(data => {
-      generateGame(data.memory.items)
+      generateGame([
+        'mini-1.png',
+        'mini-2.png',
+        'mini-3.png',
+        'mini-4.png',
+        'mini-5.png',
+        'mini-6.png',
+        'mini-7.png',
+        'mini-8.png',
+        'mini-9.png',
+        'mini-10.png',
+      ])
       attachEventListeners();
       window.parent.postMessage('ready')
   })
