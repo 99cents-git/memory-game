@@ -184,12 +184,7 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"assets/styles.css":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"./VAGRoundedBT-Regular.woff":[["VAGRoundedBT-Regular.9cd7a486.woff","assets/VAGRoundedBT-Regular.woff"],"assets/VAGRoundedBT-Regular.woff"],"./background.jpg":[["background.73f2e897.jpg","assets/background.jpg"],"assets/background.jpg"],"./..\\img\\spot-the-difference-bg.jpg":[["spot-the-difference-bg.c08ef30b.jpg","img/spot-the-difference-bg.jpg"],"img/spot-the-difference-bg.jpg"],"./button-bg-2.png":[["button-bg-2.09276063.png","assets/button-bg-2.png"],"assets/button-bg-2.png"],"./button-bg.png":[["button-bg.3fdfe99c.png","assets/button-bg.png"],"assets/button-bg.png"],"_css_loader":"../../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./bundle-url":"../../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -394,4 +389,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/styles.0ad61341.js.map
+//# sourceMappingURL=/index.js.map

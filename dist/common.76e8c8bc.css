@@ -1,0 +1,77 @@
+html {
+  font-family: "VAG", "Arial Rounded MT Bold", sans-serif;
+}
+
+#instructions {
+  z-index: 8;
+}
+
+#game {
+  z-index: 9;
+}
+
+#thanks {
+  z-index: 10;
+}
+
+#instructions, #thanks, #game, #splash {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: calc(100% - 40px);
+}
+#instructions .responsive-img, #thanks .responsive-img, #game .responsive-img, #splash .responsive-img {
+  width: 100%;
+  max-width: 100%;
+}
+#instructions .game-content, #thanks .game-content, #game .game-content, #splash .game-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#instructions .game-bg, #thanks .game-bg, #game .game-bg, #splash .game-bg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-top: 120%;
+  background-size: cover;
+  overflow: hidden;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  background-color: #B498FF;
+  font-size: 3vw;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: "VAG", "Arial Rounded MT Bold", sans-serif;
+}
+
+.header {
+  margin-top: -5vw;
+  margin-bottom: -3vw;
+}
+
+.bodytext {
+  font-size: 4vw;
+  color: white;
+}
+.bodytext p {
+  margin: 0;
+}
+
+/*# sourceMappingURL=/common.76e8c8bc.css.map */

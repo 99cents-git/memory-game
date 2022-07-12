@@ -1,20 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>Memory Game</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-        <link rel="stylesheet" href="assets/styles.css" />
-        <script src="assets/game.js" defer></script>
-    </head>
-    <body>
-        <div class="game">
-
-            <div class="board-container">
-                <div class="board" data-dimension="4"></div>
-                <div class="win">You won!</div>
-            </div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Memory Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="../../css/common.scss">
+  <link rel="stylesheet" href="assets/styles.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/petite-vue/0.4.1/petite-vue.umd.js"></script>
+</head>
+<body>
+<div class="container" id="app" v-scope @vue:mounted="onMounted">
+  <div id="splash" class="animate__animated" :class="screen === 'splash' ? animateIn : animateOut">
+    <div class="game-content">
+      <div class="game-bg">
+        <img src="./assets/splash.png" class="responsive-img" alt="splash screen">
+        <div class="button">
+          <div class="generic-button" @click="screen = 'instructions'; showInstructions = true">
+            <div class="spot-counter-text">Instructions</div>
+          </div>
         </div>
-    </body>
+      </div>
+    </div>
+  </div>
+  <div id="instructions" class="animate__animated" v-show="showInstructions"
+  :class="screen === 'instructions' ? animateIn : animateOut">
+    <div class="game-content">
+      <div class="game-bg">
+        <div class="header">
+          <img src="./assets/instructions-heading.png" class="responsive-img" alt="splash screen">
+        </div>
+        <div class="bodytext">
+          <p>How to Play:</p>
+          <ol>
+            <li>
+              The game starts with a grid of flippable cards.
+            </li>
+            <li> Tap on a card to flip it over and reveal the hidden mini.</li>
+            <li> You can flip only 2 cards at a time.</li>
+            <li>
+              If both cards have the same mini on them, it’s a match!
+            </li>
+            <li>The game ends when all the minis are matched in pairs.</li>
+          </ol>
+        </div>
+        <div class="button">
+          <div class="generic-button" @click="screen = 'game'; showGame = true">
+            <div class="spot-counter-text">Start Game</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="game" class="animate__animated" v-show="showGame" :class="screen === 'game' ? animateIn : animateOut">
+    <div class="board-container">
+      <div class="board" data-dimension="4"></div>
+      <div class="win">You won!</div>
+    </div>
+    <div style="display: flex; justify-content: space-between">
+      <div class="spot-counter" @click="screen = 'instructions'">
+        <div class="spot-counter-text">How to play</div>
+      </div>
+      <div class="generic-button">
+        <div class="spot-counter-text">Found {{itemsFound}}/8</div>
+      </div>
+    </div>
+  </div>
+  <div id="thanks" class="animate__animated" v-show="showThanks" :class="screen === 'thanks' ? animateIn : animateOut">
+    <div class="game-content">
+      <div class="game-bg">
+        <div class="header">
+          Thanks for playing
+        </div>
+        <div class="bodytext">
+          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="button">
+          <button @click="screen = 'game'">Play again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="module" lang="ts">
+  PetiteVue.createApp({
+    screen: 'splash',
+    screenWidth: 0,
+    animateIn: 'animate__rollIn',
+    animateOut: 'animate__rollOut',
+    itemsFound:0,
+    showGame: false,
+    showThanks: false,
+    showInstructions: false,
+    selectors: {
+      boardContainer: document.querySelector('.board-container'),
+      board: document.querySelector('.board'),
+    },
+    state: {
+      gameStarted: false,
+      flippedCards: 0,
+      totalFlips: 0,
+      totalTime: 0,
+      loop: null
+    },
+    onMounted() {
+      this.generateGame([
+        'mini-1.png',
+        'mini-2.png',
+        'mini-3.png',
+        'mini-4.png',
+        'mini-5.png',
+        'mini-6.png',
+        'mini-7.png',
+        'mini-8.png',
+        'mini-9.png',
+        'mini-10.png',
+        'mini-11.png',
+        'mini-12.png',
+        'mini-13.png',
+        'mini-14.png',
+        'mini-15.png',
+        'mini-16.png',
+        'mini-17.png',
+        'mini-18.png',
+        'mini-19.png',
+        'mini-20.png',
+        'mini-21.png',
+        'mini-22.png',
+        'mini-23.png',
+        'mini-24.png',
+      ])
+      this.attachEventListeners();
+      window.parent.postMessage('ready')
+    },
+    shuffle(array) {
+      const clonedArray = [...array]
+
+      for (let index = clonedArray.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1))
+        const original = clonedArray[index]
+        clonedArray[index] = clonedArray[randomIndex]
+        clonedArray[randomIndex] = original
+      }
+
+      return clonedArray
+    },
+    pickRandom(array, items) {
+      const clonedArray = [...array]
+      const randomPicks = []
+
+      for (let index = 0; index < items; index++) {
+        const randomIndex = Math.floor(Math.random() * clonedArray.length)
+        randomPicks.push(clonedArray[randomIndex])
+        clonedArray.splice(randomIndex, 1)
+      }
+
+      return randomPicks
+    },
+    generateGame(emojis) {
+      const dimensions = this.selectors.board.getAttribute('data-dimension')
+
+      if (dimensions % 2 !== 0) {
+        throw new Error("The dimension of the board must be an even number.")
+      }
+
+      const picks = this.pickRandom(emojis, (dimensions * dimensions) / 2)
+      const items = this.shuffle([...picks, ...picks])
+      const cards = `
+        <div class="board" style="grid-template-columns: repeat(${dimensions}, auto)">
+            ${items.map(item => `
+                <div class="card" data-id="${item}">
+                    <div class="card-front"></div>
+                    <div class="card-back"><img style="width:100%; max-width: 100%; height: auto;" src="${item}"/></div>
+                </div>
+            `).join('')}
+       </div>
+    `
+      const parser = new DOMParser().parseFromString(cards, 'text/html')
+      this.selectors.board.replaceWith(parser.querySelector('.board'))
+    },
+    startGame() {
+      this.state.gameStarted = true
+    },
+    flipBackCards() {
+      document.querySelectorAll('.card:not(.matched)').forEach(card => {
+        card.classList.remove('flipped')
+      })
+      this.state.flippedCards = 0
+    },
+    flipCard(card) {
+      this.state.flippedCards++
+      this.state.totalFlips++
+
+      if (!this.state.gameStarted) {
+        this.startGame()
+      }
+
+      if (this.state.flippedCards <= 2) {
+        card.classList.add('flipped')
+      }
+
+      if (this.state.flippedCards === 2) {
+        const flippedCards = document.querySelectorAll('.flipped:not(.matched)')
+        if (flippedCards[0].getAttribute('data-id') === flippedCards[1].getAttribute('data-id')) {
+          flippedCards[0].classList.add('matched')
+          flippedCards[1].classList.add('matched')
+          this.itemsFound++;
+          setTimeout(() => {
+            flippedCards[0].classList.add('animate__animated')
+            flippedCards[0].classList.add('animate__tada')
+            flippedCards[1].classList.add('animate__animated')
+            flippedCards[1].classList.add('animate__tada')
+          }, 600)
+        }
+
+        setTimeout(() => {
+          this.flipBackCards()
+        }, 1000)
+      }
+
+      // If there are no more cards that we can flip, we won the game
+      if (!document.querySelectorAll('.card:not(.flipped)').length) {
+        setTimeout(() => {
+          this.showThanks = true;
+          this.screen = 'thanks'
+          clearInterval(this.state.loop)
+        }, 1000)
+      }
+    },
+    attachEventListeners() {
+
+      document.querySelectorAll('.card').forEach(item => {
+        item.addEventListener('click', event => {
+          const eventTarget = event.target
+          const eventParent = eventTarget.parentElement
+          if (!eventParent.className.includes('flipped')) {
+            this.flipCard(eventParent)
+          }
+        })
+      })
+
+    }
+  }).mount('#app')
+</script>
 </html>
