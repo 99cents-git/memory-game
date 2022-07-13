@@ -1,12 +1,12 @@
 @font-face {
     font-family: 'VAG';
-    src: url('./VAGRoundedBT-Regular.woff') format('woff');
+    src: url('VAGRoundedBT-Regular.woff') format('woff');
 }
 
 
 .container {
     background: url("../assets/background.jpg") no-repeat;
-    background-size: contain;
+    background-size: cover;
 }
 
 body {
