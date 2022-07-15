@@ -45,7 +45,7 @@
           </ol>
         </div>
         <div class="button">
-          <div class="generic-button" @click="screen = 'game'; showGame = true">
+          <div class="generic-button" @click="restartGame">
             <div class="spot-counter-text">Start Game</div>
           </div>
         </div>
@@ -55,33 +55,38 @@
   <div id="game" class="animate__animated" v-show="showGame" :class="screen === 'game' ? animateIn : animateOut">
     <div class="board-container">
       <div class="board" data-dimension="4"></div>
-      <div class="win">You won!</div>
     </div>
     <div style="display: flex; justify-content: space-between">
-      <div class="spot-counter" @click="screen = 'instructions'">
+      <div class="spot-counter" @click="screen = 'instructions'; showInstructions = true">
         <div class="spot-counter-text">How to play</div>
       </div>
       <div class="generic-button">
+        <div class="spot-counter-text">{{formatTime}}</div>
+      </div>
+      <div class="generic-button" @click="goToThanks">
         <div class="spot-counter-text">Found {{itemsFound}}/8</div>
       </div>
     </div>
   </div>
   <div id="thanks" class="animate__animated" v-show="showThanks" :class="screen === 'thanks' ? animateIn : animateOut">
-    <div class="game-content">
-      <div class="game-bg">
-        <div class="header">
-          Thanks for playing
-        </div>
-        <div class="bodytext">
-          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          <p>lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-        <div class="button">
-          <button @click="screen = 'game'">Play again</button>
+    <div class="thanks-content">
+      <div class="header">
+        <img src="./assets/thanks.png" class="responsive-img" alt="splash screen">
+      </div>
+      <div class="bodytext">
+        <p>THANKS FOR PLAYING</p>
+        <p>Your time was: {{formatTime}}</p>
+        <p>You took {{state.totalFlips}} flips</p>
+        <p>Well Done!</p>
+      </div>
+      <div class="button">
+        <div class="generic-button" @click="restartGame">
+          <div class="spot-counter-text">Play Again?</div>
         </div>
       </div>
+    </div>
+    <div class="logo">
+      <img src="./assets/ls3-logo.png" class="responsive-img" alt="splash screen">
     </div>
   </div>
 </div>
@@ -91,8 +96,8 @@
     screen: 'splash',
     screenWidth: 0,
     animateIn: 'animate__rollIn',
-    animateOut: 'animate__rollOut',
-    itemsFound:0,
+    animateOut: 'animate__rollOut no-pointer-events',
+    itemsFound: 0,
     showGame: false,
     showThanks: false,
     showInstructions: false,
@@ -108,6 +113,17 @@
       loop: null
     },
     onMounted() {
+      window.parent.postMessage('ready')
+    },
+    restartGame() {
+
+      this.state.flippedCards = 0;
+      this.state.totalFlips = 0;
+      this.state.totalTime = 0;
+      this.state.loop = null;
+      this.itemsFound = 0;
+      this.state.gameStarted = false;
+      document.querySelector('.board-container').innerHTML = '<div class="board" data-dimension="4"></div>';
       this.generateGame([
         'mini-1.png',
         'mini-2.png',
@@ -133,9 +149,10 @@
         'mini-22.png',
         'mini-23.png',
         'mini-24.png',
-      ])
+      ]);
       this.attachEventListeners();
-      window.parent.postMessage('ready')
+      this.screen = 'game';
+      this.showGame = true
     },
     shuffle(array) {
       const clonedArray = [...array]
@@ -181,21 +198,24 @@
        </div>
     `
       const parser = new DOMParser().parseFromString(cards, 'text/html')
-      this.selectors.board.replaceWith(parser.querySelector('.board'))
+      document.querySelector('.board').replaceWith(parser.querySelector('.board'))
     },
     startGame() {
-      this.state.gameStarted = true
+      this.state.gameStarted = true;
+      this.state.loop = setInterval(() => {
+        this.state.totalTime++;
+      }, 1000);
     },
     flipBackCards() {
       document.querySelectorAll('.card:not(.matched)').forEach(card => {
         card.classList.remove('flipped')
       })
-      this.state.flippedCards = 0
+      this.state.flippedCards = 0;
     },
     flipCard(card) {
       this.state.flippedCards++
       this.state.totalFlips++
-
+      console.log(this.state.gameStarted);
       if (!this.state.gameStarted) {
         this.startGame()
       }
@@ -205,6 +225,7 @@
       }
 
       if (this.state.flippedCards === 2) {
+        this.canInteract = false;
         const flippedCards = document.querySelectorAll('.flipped:not(.matched)')
         if (flippedCards[0].getAttribute('data-id') === flippedCards[1].getAttribute('data-id')) {
           flippedCards[0].classList.add('matched')
@@ -232,8 +253,12 @@
         }, 1000)
       }
     },
+    goToThanks() {
+      this.showThanks = true;
+      this.screen = 'thanks'
+      clearInterval(this.state.loop)
+    },
     attachEventListeners() {
-
       document.querySelectorAll('.card').forEach(item => {
         item.addEventListener('click', event => {
           const eventTarget = event.target
@@ -243,7 +268,11 @@
           }
         })
       })
-
+    },
+    get formatTime() {
+      const minutes = Math.floor(this.state.totalTime / 60)
+      const seconds = this.state.totalTime % 60
+      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
     }
   }).mount('#app')
 </script>

@@ -6,7 +6,7 @@
 
 .container {
     background: url("/background.73f2e897.jpg") no-repeat;
-    background-size: contain;
+    background-size: cover;
 }
 
 body {
@@ -162,7 +162,7 @@ body {
     font-size: 4vw;
     color: white;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    padding-bottom: 8px;
+    padding-bottom: 20px;
 
 }
 

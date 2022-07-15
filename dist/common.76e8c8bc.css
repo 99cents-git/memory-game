@@ -23,7 +23,6 @@ html {
 }
 #instructions .responsive-img, #thanks .responsive-img, #game .responsive-img, #splash .responsive-img {
   width: 100%;
-  max-width: 100%;
 }
 #instructions .game-content, #thanks .game-content, #game .game-content, #splash .game-content {
   position: absolute;
@@ -42,11 +41,36 @@ html {
   align-items: center;
 }
 
+#thanks {
+  height: 90%;
+}
+#thanks .thanks-content {
+  height: 70%;
+  justify-content: space-around;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+#thanks .header {
+  margin-top: -8vw;
+  margin-bottom: -8vw;
+}
+#thanks .logo {
+  position: absolute;
+  bottom: -5%;
+  right: -5%;
+  width: 50%;
+}
+
+.no-pointer-events {
+  pointer-events: none;
+}
+
 .container {
   position: relative;
-  max-width: 640px;
   margin: 0 auto;
-  padding-top: 120%;
+  padding-top: 121%;
   background-size: cover;
   overflow: hidden;
 }
