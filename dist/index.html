@@ -15,10 +15,17 @@
     <div class="game-content">
       <div class="game-bg">
         <img src="/splash.792bc06a.png" class="responsive-img" alt="splash screen">
+        <div style="display: flex; justify-content: space-between">
         <div class="button">
           <div class="generic-button" @click="screen = 'instructions'; showInstructions = true">
-            <div class="spot-counter-text">Instructions</div>
+            <div class="spot-counter-text">How To Play</div>
           </div>
+        </div>
+        <div class="button">
+          <div class="generic-button" @click="restartGame">
+            <div class="spot-counter-text">Start Game</div>
+          </div>
+        </div>
         </div>
       </div>
     </div>
@@ -30,7 +37,7 @@
           <img src="/instructions-heading.d5d62f34.png" class="responsive-img" alt="splash screen">
         </div>
         <div class="bodytext">
-          <p>How to Play:</p>
+          <p>How To Play:</p>
           <ol>
             <li>
               The game starts with a grid of flippable cards.
@@ -56,9 +63,9 @@
       <div class="board" data-dimension="4"></div>
     </div>
     <div style="display: flex; justify-content: space-between">
-      <div class="spot-counter" @click="screen = 'instructions'; showInstructions = true">
-        <div class="spot-counter-text">How to play</div>
-      </div>
+<!--      <div class="spot-counter" @click="screen = 'instructions'; showInstructions = true">
+        <div class="spot-counter-text">How To Play</div>
+      </div>-->
       <div class="generic-button">
         <div class="spot-counter-text">{{formatTime}}</div>
       </div>
@@ -214,7 +221,6 @@
     flipCard(card) {
       this.state.flippedCards++
       this.state.totalFlips++
-      console.log(this.state.gameStarted);
       if (!this.state.gameStarted) {
         this.startGame()
       }
