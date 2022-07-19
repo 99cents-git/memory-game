@@ -98,4 +98,20 @@ button {
   margin: 0;
 }
 
+.spot-counter, .generic-button {
+  width: 30vw;
+  height: 18vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.spot-counter-text {
+  font-size: 4vw;
+  color: white;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  padding-bottom: 2vw;
+}
+
 /*# sourceMappingURL=/common.76e8c8bc.css.map */

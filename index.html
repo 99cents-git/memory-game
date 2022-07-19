@@ -120,7 +120,7 @@
       loop: null
     },
     onMounted() {
-      window.parent.postMessage('ready')
+
     },
     restartGame() {
 
@@ -215,7 +215,8 @@
     },
     flipBackCards() {
       document.querySelectorAll('.card:not(.matched)').forEach(card => {
-        card.classList.remove('flipped')
+        card.classList.remove('flipped');
+        card.setAttribute("data-prevent", 'false')
       })
       this.state.flippedCards = 0;
     },
@@ -267,10 +268,10 @@
     attachEventListeners() {
       document.querySelectorAll('.card').forEach(item => {
         item.addEventListener('click', event => {
-          const eventTarget = event.target
-          const eventParent = eventTarget.parentElement
-          if (!eventParent.className.includes('flipped')) {
-            this.flipCard(eventParent)
+          const eventTarget = event.currentTarget;
+          if (!eventTarget.className.includes('flipped') && eventTarget.getAttribute("data-prevent") !== 'true') {
+            eventTarget.setAttribute("data-prevent", 'true')
+            this.flipCard(eventTarget)
           }
         })
       })
@@ -281,5 +282,10 @@
       return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
     }
   }).mount('#app')
+</script>
+<script type="text/javascript">
+  window.onload = function() {
+    window.parent.postMessage('ready');
+  }
 </script>
 </html>
